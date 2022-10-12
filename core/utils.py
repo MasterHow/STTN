@@ -26,6 +26,61 @@ from matplotlib import pyplot as plt
 matplotlib.use('agg')
 
 
+class TrainZipReader(object):
+    file_dict = dict()
+
+    def __init__(self):
+        super(TrainZipReader, self).__init__()
+
+    @staticmethod
+    def build_file_dict(path):
+        file_dict = TrainZipReader.file_dict
+        if path in file_dict:
+            return file_dict[path]
+        else:
+            file_handle = zipfile.ZipFile(path, 'r')
+            file_dict[path] = file_handle
+            return file_dict[path]
+
+    @staticmethod
+    def imread(path, idx):
+        zfile = TrainZipReader.build_file_dict(path)
+        filelist = zfile.namelist()
+        filelist.sort()
+        data = zfile.read(filelist[idx])
+        #
+        im = Image.open(io.BytesIO(data))
+        return im
+
+
+class TestZipReader(object):
+    file_dict = dict()
+
+    def __init__(self):
+        super(TestZipReader, self).__init__()
+
+    @staticmethod
+    def build_file_dict(path):
+        file_dict = TestZipReader.file_dict
+        if path in file_dict:
+            return file_dict[path]
+        else:
+            file_handle = zipfile.ZipFile(path, 'r')
+            file_dict[path] = file_handle
+            return file_dict[path]
+
+    @staticmethod
+    def imread(path, idx):
+        zfile = TestZipReader.build_file_dict(path)
+        filelist = zfile.namelist()
+        filelist.sort()
+        data = zfile.read(filelist[idx])
+        file_bytes = np.asarray(bytearray(data), dtype=np.uint8)
+        im = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        im = Image.fromarray(cv2.cvtColor(im, cv2.COLOR_BGR2RGB))
+        # im = Image.open(io.BytesIO(data))
+        return im
+
 # #####################################################
 # #####################################################
 
