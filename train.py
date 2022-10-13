@@ -6,6 +6,9 @@ import numpy as np
 from shutil import copyfile
 import torch
 import torch.multiprocessing as mp
+import os
+# 解决OMP错误
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 from core.trainer import Trainer
 from core.dist import (

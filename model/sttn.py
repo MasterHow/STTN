@@ -63,11 +63,19 @@ class BaseNetwork(nn.Module):
 
 
 class InpaintGenerator(BaseNetwork):
-    def __init__(self, init_weights=True):
+    def __init__(self, init_weights=True, output_size=None):
         super(InpaintGenerator, self).__init__()
         channel = 256
         stack_num = 8
-        patchsize = [(108, 60), (36, 20), (18, 10), (9, 5)]
+
+        if output_size is None:
+            # default
+            patchsize = [(108, 60), (36, 20), (18, 10), (9, 5)]
+        else:
+            w = output_size[0]
+            h = output_size[1]
+            patchsize = [(w, h), (w//3, h//3), (w//6, h//6), (w//12, h//12)]
+
         blocks = []
         for _ in range(stack_num):
             blocks.append(TransformerBlock(patchsize, hidden=channel))

@@ -61,7 +61,16 @@ class Trainer():
 
         # setup models including generator and discriminator
         net = importlib.import_module('model.'+config['model'])
-        self.netG = net.InpaintGenerator()
+
+        # 定义trans block的输出大小
+        if config['model_cfg']['output_size'] != 0:
+            self.output_size = config['model_cfg']['output_size']
+        else:
+            # 使用网络默认的output_size
+            self.output_size = None
+
+        self.netG = net.InpaintGenerator(output_size=self.output_size)
+
         self.netG = self.netG.to(self.config['device'])
         self.netD = net.Discriminator(
             in_channels=3, use_sigmoid=config['losses']['GAN_LOSS'] != 'hinge')
