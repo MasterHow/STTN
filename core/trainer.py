@@ -142,6 +142,11 @@ class Trainer():
                 model_path, 'dis_{}.pth'.format(str(latest_epoch).zfill(5)))
             opt_path = os.path.join(
                 model_path, 'opt_{}.pth'.format(str(latest_epoch).zfill(5)))
+            # 删除latest多保存的空格
+            gen_path = gen_path[:-5] + gen_path[-4:]
+            dis_path = dis_path[:-5] + dis_path[-4:]
+            opt_path = opt_path[:-5] + opt_path[-4:]
+
             if self.config['global_rank'] == 0:
                 print('Loading model from {}...'.format(gen_path))
             data = torch.load(gen_path, map_location=self.config['device'])
